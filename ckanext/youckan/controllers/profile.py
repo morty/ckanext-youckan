@@ -19,7 +19,6 @@ log = logging.getLogger(__name__)
 class YouckanProfileController(YouckanBaseController):
     def profile(self, username):
         user = model.User.get(username)
-
         if not user:
             return toolkit.abort(404, 'User {0} not found'.format(username))
 
@@ -34,21 +33,29 @@ class YouckanProfileController(YouckanBaseController):
 
     def my_datasets(self, username):
         user = model.User.get(username)
+        if not user:
+            return toolkit.abort(404, 'User {0} not found'.format(username))
         queryset = self._my_datasets_query(user).limit(20)
         return self.to_json(self._build_datasets(queryset))
 
     def my_valorizations(self, username):
         user = model.User.get(username)
+        if not user:
+            return toolkit.abort(404, 'User {0} not found'.format(username))
         queryset = self._my_valorizations_query(user).limit(20)
         return self.to_json(list(queryset))
 
     def my_organizations(self, username):
         user = model.User.get(username)
+        if not user:
+            return toolkit.abort(404, 'User {0} not found'.format(username))
         queryset = self._my_organizations_query(user).limit(20)
         return self.to_json(list(queryset))
 
     def my_usefuls(self, username):
         user = model.User.get(username)
+        if not user:
+            return toolkit.abort(404, 'User {0} not found'.format(username))
         queryset = self._my_usefuls_query(user).limit(20)
         return json.dumps(self._build_datasets(queryset), cls=YouckanJsonEncoder)
 
@@ -68,8 +75,8 @@ class YouckanProfileController(YouckanBaseController):
             and
             model.Member.table_name == 'user'
         )
-        organizations = organizations.join(model.User, model.User.id == model.Member.table_id)
         organizations = organizations.filter(model.Member.state == 'active')
+        organizations = organizations.filter(model.Member.table_id == user.id)
         return organizations
 
     def _my_usefuls_query(self, user):
