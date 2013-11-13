@@ -4,28 +4,18 @@ from __future__ import unicode_literals
 import logging
 import json
 
-from datetime import datetime
-
 from ckan import model
-from ckan.plugins import toolkit
 
 from ckanext.youckan import queries
+from ckanext.youckan.utils import YouckanJsonEncoder
+from ckanext.youckan.controllers.base import YouckanBaseController
 
 DBSession = model.meta.Session
 
 log = logging.getLogger(__name__)
 
 
-class YouckanJsonEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        elif isinstance(obj, model.DomainObject):
-            return obj.as_dict()
-        return super(YouckanJsonEncoder, self).default(obj)
-
-
-class YouckanProfileController(toolkit.BaseController):
+class YouckanProfileController(YouckanBaseController):
     def profile(self, username):
         user = model.User.get(username)
 
@@ -36,22 +26,22 @@ class YouckanProfileController(toolkit.BaseController):
             'usefuls': self._build_datasets(self._my_usefuls_query(user).limit(20)),
             'organizations': list(self._my_organizations_query(user).limit(20)),
         }
-        return json.dumps(data, cls=YouckanJsonEncoder)
+        return self.to_json(data)
 
     def my_datasets(self, username):
         user = model.User.get(username)
         queryset = self._my_datasets_query(user).limit(20)
-        return json.dumps(self._build_datasets(queryset), cls=YouckanJsonEncoder)
+        return self.to_json(self._build_datasets(queryset))
 
     def my_valorizations(self, username):
         user = model.User.get(username)
         queryset = self._my_valorizations_query(user).limit(20)
-        return json.dumps(list(queryset), cls=YouckanJsonEncoder)
+        return self.to_json(list(queryset))
 
     def my_organizations(self, username):
         user = model.User.get(username)
         queryset = self._my_organizations_query(user).limit(20)
-        return json.dumps(list(queryset), cls=YouckanJsonEncoder)
+        return self.to_json(list(queryset))
 
     def my_usefuls(self, username):
         user = model.User.get(username)
@@ -82,39 +72,4 @@ class YouckanProfileController(toolkit.BaseController):
         usefuls = queries.datasets_and_organizations().join(model.UserFollowingDataset)
         usefuls = usefuls.filter(model.UserFollowingDataset.follower_id == user.id)
         return usefuls
-
-    def _build_datasets(self, query):
-        '''Build datasets for display from a queryset'''
-        datasets = []
-
-        for dataset, organization in query:
-
-            temporal_coverage = {
-                'from': dataset.extras.get('temporal_coverage_from', None),
-                'to': dataset.extras.get('temporal_coverage_to', None),
-            }
-            try:
-                temporal_coverage['from'] = datetime.strptime(temporal_coverage['from'], '%Y-%m-%d')
-            except:
-                pass
-            try:
-                temporal_coverage['to'] = datetime.strptime(temporal_coverage['to'], '%Y-%m-%d')
-            except:
-                pass
-
-            datasets.append({
-                'name': dataset.name,
-                'title': dataset.title,
-                'display_name': dataset.title or dataset.name,
-                'notes': dataset.notes,
-                'organization': organization,
-                'temporal_coverage': temporal_coverage,
-                'territorial_coverage': {
-                    'name': dataset.extras.get('territorial_coverage', None),
-                    'granularity': dataset.extras.get('territorial_coverage_granularity', None),
-                },
-                'periodicity': dataset.extras.get('"dct:accrualPeriodicity"', None),
-            })
-
-        return datasets
 
