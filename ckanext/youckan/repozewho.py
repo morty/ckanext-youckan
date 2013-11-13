@@ -3,79 +3,92 @@ from __future__ import unicode_literals
 
 import logging
 
+import hashlib
+
 from ckan.model import User
 
-from ckanext.oauth2.repozewho import OAuth2Plugin
-from repoze.who.interfaces import IChallengeDecider
-from webob import Request
-from zope.interface import directlyProvides
-
-from paste.auth import auth_tkt
+from repoze.who.interfaces import IIdentifier, IAuthenticator, IChallenger
+from webob import Request, Response
+from zope.interface import implements
 
 log = logging.getLogger(__name__)
 
 
 def plugin(**kwargs):
-    return YouckanPlugin(**kwargs)
+    return YouckanAuthPlugin(**kwargs)
 
 
-class YouckanPlugin(OAuth2Plugin):
-    def __init__(self, api_endpoint=None, **kwargs):
-        if not api_endpoint:
-            raise ValueError('api_endpoint parameter is required')
-        self.api_endpoint = api_endpoint
+class YouckanAuthPlugin(object):
 
-        cookie_name = kwargs.pop('cookie_name', 'ckanext.youckan')
-        shared_secret = kwargs.pop('shared_secret', None)
-        domain = kwargs.pop('domain', None)
-        super(YouckanPlugin, self).__init__(cookie_name=cookie_name, **kwargs)
+    implements(IIdentifier, IChallenger, IAuthenticator)
 
-    # def authenticate(self, environ, identity):
-    #     '''
-    #     Authenticate and extract identity from OAuth2 tokens
-    #     '''
-    #     request = Request(environ)
-    #     log.debug('Repoze authenticate')
-    #     log.debug(identity)
-    #     if 'oauth2.token' in identity:
-    #         oauth = OAuth2Session(self.client_id, token=identity['oauth2.token'])
-    #         profile_response = oauth.get(self.profile_api_url)
-    #         user_data = profile_response.json()
-    #         username = user_data[self.profile_api_user_field]
-    #         user = User.by_name(username)
-    #         if user is None:
-    #             return None
-    #         else:
-    #             identity.update({'repoze.who.userid': user.name})
-    #             self._redirect_from_callback(request, identity)
-    #             return user.name
-    #     return None
+    def __init__(self, secret=None, login_url=None, session_cookie_name='sessionid',
+            auth_cookie_name='youckan.auth', next_url_name='next'):
 
-    def get_user(self, oauth, *args, **kwargs):
-        log.debug('get user')
-        profile_response = oauth.get(''.join([self.api_endpoint, 'me']))
-        user_data = profile_response.json()
-        username = user_data['slug']
-        log.debug('username ' + username)
-        return User.by_name(username)
+        if not secret or not login_url:
+            raise ValueError('secret and login_url parameters are required')
+
+        self.session_cookie_name = session_cookie_name
+        self.auth_cookie_name = auth_cookie_name
+        self.secret = secret
+        self.login_url = login_url
+        self.next_url_name = next_url_name
+
+    def challenge(self, environ, status, app_headers=(), forget_headers=()):
+        '''Redirect to YouCKAN login page'''
+        request = Request(environ)
+
+        next_url = request.url
+        auth_url = '{0}?{1}={2}'.format(self.login_url, self.next_url_name, next_url)
+
+        response = Response()
+        response.status = 302
+        response.location = auth_url
+
+        return response
 
     def identify(self, environ):
-        '''Forget identity if Django session is not found'''
-        log.debug('youckan repoze identify')
+        '''Identity user from its Django session and YouCKAN auth cookies'''
         request = Request(environ)
-        if request.path != self.redirect_url and 'youckan_auth' not in request.cookies:
-            log.debug('ask forget')
-            self.forget(environ, None)
+
+        if not self.session_cookie_name in request.cookies or not self.auth_cookie_name in request.cookies:
             return None
-        return super(YouckanPlugin, self).identify(environ)
 
+        session_id = request.cookies[self.session_cookie_name]
+        signature, username = self.extract_cookie(request.cookies[self.auth_cookie_name])
 
-def challenge_decider(environ, status, headers):
-    log.debug('challenge_decider')
-    # print environ, status, headers
-    request = Request(environ)
-    # if request.path == self.redirect_url:
-    #     return False
-    print request.cookies
-    return status.startswith('401 ')
-directlyProvides(challenge_decider, IChallengeDecider)
+        if not username or not signature:
+            return None
+
+        if not signature == self.sign(username, session_id):
+            log.debug('Signature ID mismatch')
+
+        return {'username': username}
+
+    def authenticate(self, environ, identity):
+        '''Fetch the user given its username in identity'''
+        if 'username' in identity:
+            user = User.by_name(identity['username'])
+            if user is None:
+                return None
+            else:
+                identity.update({'repoze.who.userid': user.name})
+                return user.name
+        return None
+
+    def remember(self, environ, identity):
+        '''Remember is YouCKAN responsibility'''
+        pass
+
+    def forget(self, request, environ):
+        '''Forget is YouCKAN responsibility'''
+        pass
+
+    def extract_cookie(self, cookie):
+        '''Extract information from YouCKAN cookie'''
+        parts = cookie.split('::')
+        return parts if len(parts) == 2 else (None, None)
+
+    def sign(self, username, session_id):
+        '''Signature algorythm encapsulation'''
+        return hashlib.sha256(self.secret + session_id + username).hexdigest()

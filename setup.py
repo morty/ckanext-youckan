@@ -50,9 +50,7 @@ setup(
     namespace_packages=['ckanext'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'ckanext-oauth2',
-    ],
+    install_requires=[],
     entry_points={
         'ckan.plugins': [
             'youckan = ckanext.youckan.plugins:YouckanPlugin',

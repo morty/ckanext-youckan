@@ -6,8 +6,6 @@ import logging
 from ckan import plugins
 from ckan.plugins import toolkit
 
-from ckanext.oauth2.plugins import OAuth2Plugin
-
 
 log = logging.getLogger(__name__)
 
@@ -29,8 +27,40 @@ URLS = {
 }
 
 
-class YouckanPlugin(OAuth2Plugin):
+def _no_permissions(context, msg):
+    user = context['user']
+    return {'success': False, 'msg': msg.format(user=user)}
+
+
+# @toolkit.auth_sysadmins_check
+# def user_create(context, data_dict):
+#     msg = toolkit._('Users cannot be created.')
+#     return _no_permissions(context, msg)
+
+
+# @toolkit.auth_sysadmins_check
+# def user_update(context, data_dict):
+#     msg = toolkit._('Users cannot be edited.')
+#     return _no_permissions(context, msg)
+
+
+@toolkit.auth_sysadmins_check
+def user_reset(context, data_dict):
+    msg = toolkit._('Users cannot reset passwords.')
+    return _no_permissions(context, msg)
+
+
+@toolkit.auth_sysadmins_check
+def request_reset(context, data_dict):
+    msg = toolkit._('Users cannot reset passwords.')
+    return _no_permissions(context, msg)
+
+
+class YouckanPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IRoutes, inherit=True)
+    plugins.implements(plugins.IAuthenticator, inherit=True)
+    plugins.implements(plugins.IAuthFunctions, inherit=True)
+    plugins.implements(plugins.IConfigurable)
 
     def before_map(self, map):
         for basename, mapping in URLS.items():
@@ -39,22 +69,38 @@ class YouckanPlugin(OAuth2Plugin):
                 map.connect(name, pattern, controller=controller, action=action)
         return map
 
-    def after_map(self, map):
-        return map
+    def configure(self, config):
+        '''Store the YouCKAN configuration'''
+        self.use_auth = toolkit.asbool(config.get('youckan.use_auth', False))
+        if self.use_auth:
+            self.logout_url = config['youckan.logout_url']
 
-    # def identify(self):
-    #     '''
-    #     Open and close sessions following YouCKAN session cookie.
+    def login(self):
+        '''Trigger a repose.who challenge'''
+        if not self.use_auth:
+            pass
 
-    #     Log user if youckan session is present and vice-versa.
-    #     '''
-    #     print 'youckan identify'
-    #     print 'cookies', toolkit.request.cookies
-    #     youckan_session_cookie = toolkit.request.cookies.get('youckan_session')
-    #     authtkt_cookie = toolkit.request.cookies.get('auth_tkt')
-        # if youckan_session_cookie and not authtkt_cookie:
-        #     # Trigger a login (will be redirected)
-        #     return toolkit.abort(401, 'Force OAuth2 check')
-        # elif authtkt_cookie and not youckan_session_cookie:
-        #     # Disconnect user
-        #     self.logout()
+        if not toolkit.c.user:
+            # A 401 HTTP Status will cause the login to be triggered
+            return toolkit.abort(401, toolkit._('Login required!'))
+
+        redirect_to = toolkit.request.params.get('came_from', '/')
+        toolkit.redirect_to(bytes(redirect_to))
+
+    def logout(self):
+        '''Redirect to YouCKAN logout page'''
+        if not self.use_auth:
+            pass
+        return toolkit.redirect_to(bytes(self.logout_url), locale='default')
+
+    def get_auth_functions(self):
+        if not self.use_auth:
+            return {}
+
+        # we need to prevent some actions being authorized.
+        return {
+            # 'user_create': user_create,
+            # 'user_update': user_update,
+            'user_reset': user_reset,
+            'request_reset': request_reset,
+        }
