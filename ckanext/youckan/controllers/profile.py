@@ -68,8 +68,8 @@ class YouckanProfileController(YouckanBaseController):
             and
             model.Member.table_name == 'user'
         )
+        organizations = organizations.join(model.User, model.User.id == model.Member.table_id)
         organizations = organizations.filter(model.Member.state == 'active')
-        organizations = organizations.filter(model.Member.table_id == user.id)
         return organizations
 
     def _my_usefuls_query(self, user):
