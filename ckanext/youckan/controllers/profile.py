@@ -5,6 +5,7 @@ import logging
 import json
 
 from ckan import model
+from ckan.plugins import toolkit
 
 from ckanext.youckan import queries
 from ckanext.youckan.utils import YouckanJsonEncoder
@@ -18,6 +19,9 @@ log = logging.getLogger(__name__)
 class YouckanProfileController(YouckanBaseController):
     def profile(self, username):
         user = model.User.get(username)
+
+        if not user:
+            return toolkit.abort(404, 'User {0} not found'.format(username))
 
         data = {
             'name': username,
@@ -72,4 +76,3 @@ class YouckanProfileController(YouckanBaseController):
         usefuls = queries.datasets_and_organizations().join(model.UserFollowingDataset)
         usefuls = usefuls.filter(model.UserFollowingDataset.follower_id == user.id)
         return usefuls
-
