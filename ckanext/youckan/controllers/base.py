@@ -28,7 +28,7 @@ class YouckanBaseController(toolkit.BaseController):
         return json.dumps(data, cls=YouckanJsonEncoder)
 
     def json_response(self, data):
-        toolkit.response.headers['Content-Type'] = 'application/json'
+        toolkit.response.headers[bytes('Content-Type')] = bytes('application/json')
         return self.to_json(data)
 
     def _build_datasets(self, query):
