@@ -3,19 +3,16 @@ from __future__ import unicode_literals
 
 import logging
 
-from ckan import model
 from ckan.model import Related
 from ckan.plugins import toolkit
 
 from ckanext.youckan.controllers.base import YouckanBaseController
 
-DBSession = model.meta.Session
-
 log = logging.getLogger(__name__)
 
 
 class YouckanReuseController(YouckanBaseController):
-    def toggle_featured(self, dataset_name, reuse_id):
+    def _toggle_featured(self, reuse_id, featured=None):
         '''
         Mark or unmark a reuse as featured
         '''
@@ -24,8 +21,23 @@ class YouckanReuseController(YouckanBaseController):
             raise toolkit.NotAuthorized()
 
         reuse = Related.get(reuse_id)
-        reuse.featured = 0 if reuse.featured else 1
+        reuse.featured = featured if featured is not None else (0 if reuse.featured else 1)
         self.commit()
-        DBSession.commit()
+        return reuse
 
-        return self.to_json(reuse)
+        return self.json_response(reuse)
+
+    def toggle_featured(self, reuse_id):
+        '''
+        Mark or unmark a reuse as featured
+        '''
+        reuse = self._toggle_featured(reuse_id)
+        return self.json_response(reuse)
+
+    def unfeature(self, reuse_id):
+        '''
+        Unmark a reuse as featured
+        '''
+        reuse = self._toggle_featured(reuse_id, 0)
+        return self.json_response(reuse)
+

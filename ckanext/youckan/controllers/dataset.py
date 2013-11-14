@@ -115,5 +115,5 @@ class YouckanDatasetController(YouckanBaseController):
         # if not json_response['success']:
         #     log.error('Unable to create relationship: {0}'.format(json_response['error']['message']))
 
-        return self.to_json(data)
+        return self.json_response(data)
 

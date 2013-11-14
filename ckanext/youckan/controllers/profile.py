@@ -29,35 +29,35 @@ class YouckanProfileController(YouckanBaseController):
             'usefuls': self._build_datasets(self._my_usefuls_query(user).limit(20)),
             'organizations': list(self._my_organizations_query(user).limit(20)),
         }
-        return self.to_json(data)
+        return self.json_response(data)
 
     def my_datasets(self, username):
         user = model.User.get(username)
         if not user:
             return toolkit.abort(404, 'User {0} not found'.format(username))
         queryset = self._my_datasets_query(user).limit(20)
-        return self.to_json(self._build_datasets(queryset))
+        return self.json_response(self._build_datasets(queryset))
 
     def my_valorizations(self, username):
         user = model.User.get(username)
         if not user:
             return toolkit.abort(404, 'User {0} not found'.format(username))
         queryset = self._my_valorizations_query(user).limit(20)
-        return self.to_json(list(queryset))
+        return self.json_response(list(queryset))
 
     def my_organizations(self, username):
         user = model.User.get(username)
         if not user:
             return toolkit.abort(404, 'User {0} not found'.format(username))
         queryset = self._my_organizations_query(user).limit(20)
-        return self.to_json(list(queryset))
+        return self.json_response(list(queryset))
 
     def my_usefuls(self, username):
         user = model.User.get(username)
         if not user:
             return toolkit.abort(404, 'User {0} not found'.format(username))
         queryset = self._my_usefuls_query(user).limit(20)
-        return json.dumps(self._build_datasets(queryset), cls=YouckanJsonEncoder)
+        return self.json_response(self._build_datasets(queryset))
 
     def _my_datasets_query(self, user):
         datasets = queries.datasets_and_organizations()

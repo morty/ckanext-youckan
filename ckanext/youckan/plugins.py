@@ -22,7 +22,9 @@ URLS = {
         ('youckan_fork', '/youckan/dataset/:dataset_name/fork', 'fork'),
     ),
     'reuse': (
-        ('youckan_reuse_featured', '/youckan/dataset/:dataset_name/reuse/:reuse_id/featured', 'toggle_featured'),
+        # ('youckan_reuse_featured', '/youckan/dataset/:dataset_name/reuse/:reuse_id/featured', 'toggle_featured'),
+        ('youckan_reuse_featured', '/youckan/reuse/:reuse_id/featured', 'toggle_featured'),
+        ('youckan_reuse_unfeature', '/youckan/reuse/:reuse_id/unfeature', 'unfeature'),
     ),
 }
 

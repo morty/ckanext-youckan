@@ -5,6 +5,9 @@ import logging
 
 import hashlib
 
+
+from urllib import urlencode
+
 from ckan.model import User
 
 from repoze.who.interfaces import IIdentifier, IAuthenticator, IChallenger
@@ -38,7 +41,7 @@ class YouckanAuthPlugin(object):
         '''Redirect to YouCKAN login page'''
         request = Request(environ)
 
-        next_url = request.url
+        next_url = urlencode(request.url)
         auth_url = '{0}?{1}={2}'.format(self.login_url, self.next_url_name, next_url)
 
         response = Response()
@@ -61,7 +64,8 @@ class YouckanAuthPlugin(object):
             return None
 
         if not signature == self.sign(username, session_id):
-            log.debug('Signature ID mismatch')
+            log.debug('Signature ID mismatch: %s', username)
+            return None
 
         return {'username': username}
 
@@ -77,11 +81,11 @@ class YouckanAuthPlugin(object):
         return None
 
     def remember(self, environ, identity):
-        '''Remember is YouCKAN responsibility'''
+        '''Remember is YouCKAN SSO responsibility'''
         pass
 
     def forget(self, request, environ):
-        '''Forget is YouCKAN responsibility'''
+        '''Forget is YouCKAN SSO responsibility'''
         pass
 
     def extract_cookie(self, cookie):
