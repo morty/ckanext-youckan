@@ -6,7 +6,7 @@ import logging
 import hashlib
 
 
-from urllib import urlencode
+from urllib import quote
 
 from ckan.model import User
 
@@ -41,7 +41,7 @@ class YouckanAuthPlugin(object):
         '''Redirect to YouCKAN login page'''
         request = Request(environ)
 
-        next_url = urlencode(request.url)
+        next_url = quote(request.url)
         auth_url = '{0}?{1}={2}'.format(self.login_url, self.next_url_name, next_url)
 
         response = Response()
