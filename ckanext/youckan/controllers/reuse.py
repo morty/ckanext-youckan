@@ -40,4 +40,3 @@ class YouckanReuseController(YouckanBaseController):
         '''
         reuse = self._toggle_featured(reuse_id, 0)
         return self.json_response(reuse)
-

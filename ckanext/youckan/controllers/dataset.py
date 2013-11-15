@@ -24,7 +24,6 @@ class YouckanDatasetController(YouckanBaseController):
         The new owner will be the user parameter.
         The new package is created and the original will have a new related reference to the fork.
         '''
-        import ipdb; ipdb.set_trace()
         user = toolkit.c.user
 
         if not user:

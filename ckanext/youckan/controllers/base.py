@@ -79,4 +79,4 @@ class YouckanBaseController(toolkit.BaseController):
             'revision_id': organization.revision_id,
             'certified_public_service': bool(organization.certified_public_service),
             'nb_datasets': nb_datasets,
-        }
+        } if organization else None
