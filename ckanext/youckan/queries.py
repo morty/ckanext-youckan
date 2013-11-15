@@ -5,6 +5,7 @@ import logging
 
 from ckan import model
 
+from sqlalchemy.orm import joinedload
 from sqlalchemy.sql import func, desc, null
 
 from ckanext.etalab.model import CertifiedPublicService
@@ -18,8 +19,10 @@ def datasets_and_organizations():
     '''Query dataset with their organization'''
     query = DB.query(model.Package, model.Group)
     query = query.outerjoin(model.Group, model.Group.id == model.Package.owner_org)
+    query = query.outerjoin(CertifiedPublicService)
     query = query.filter(~model.Package.private)
     query = query.filter(model.Package.state == 'active')
+    query = query.options(joinedload(model.Group.certified_public_service))
     return query
 
 
@@ -40,4 +43,5 @@ def organizations_and_counters():
         desc('nb_datasets'),
         model.Group.title
     )
+    query = query.options(joinedload('certified_public_service'))
     return query
