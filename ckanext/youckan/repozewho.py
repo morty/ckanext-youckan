@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import hashlib
+import hmac
 import logging
 
-import hashlib
+from base64 import b64encode
 
 
 from urllib import quote
@@ -93,6 +95,6 @@ class YouckanAuthPlugin(object):
         parts = cookie.split('::')
         return parts if len(parts) == 2 else (None, None)
 
-    def sign(self, username, session_id):
-        '''Signature algorythm encapsulation'''
-        return hashlib.sha256(self.secret + session_id + username).hexdigest()
+    def sign(self, message, salt):
+        secret = self.secret + salt
+        return b64encode(hmac.new(secret, message, digestmod=hashlib.sha256).digest())
