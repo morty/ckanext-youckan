@@ -64,9 +64,12 @@ class YouckanBaseController(toolkit.BaseController):
         }
 
     def _build_organizations(self, query):
-        return [self._build_organization(organization, nb_datasets) for organization, nb_datasets in query]
+        return [
+            self._build_organization(organization, nb_datasets, nb_members)
+            for organization, nb_datasets, nb_members in query
+        ]
 
-    def _build_organization(self, organization, nb_datasets=None):
+    def _build_organization(self, organization, nb_datasets=None, nb_members=None):
         return {
             'id': organization.id,
             'name': organization.name,
@@ -79,4 +82,5 @@ class YouckanBaseController(toolkit.BaseController):
             'revision_id': organization.revision_id,
             'certified_public_service': bool(organization.certified_public_service),
             'nb_datasets': nb_datasets,
+            'nb_members': nb_members,
         } if organization else None

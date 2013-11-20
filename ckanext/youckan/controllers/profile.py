@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 import logging
 
+from sqlalchemy.sql import and_
+
 from ckan import model
 from ckan.plugins import toolkit
 
@@ -68,11 +70,10 @@ class YouckanProfileController(YouckanBaseController):
 
     def _my_organizations_query(self, user):
         organizations = queries.organizations_and_counters()
-        organizations = organizations.join(
-            model.Member, model.Member.group_id == model.Group.id
-            and
-            model.Member.table_name == 'user'
-        )
+        organizations = organizations.join(model.Member, and_(
+            model.Member.group_id == model.Group.id,
+            model.Member.table_name == 'user',
+        ))
         organizations = organizations.filter(model.Member.state == 'active')
         organizations = organizations.filter(model.Member.table_id == user.id)
         return organizations
