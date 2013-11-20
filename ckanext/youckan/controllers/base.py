@@ -31,11 +31,16 @@ class YouckanBaseController(toolkit.BaseController):
         toolkit.response.headers[bytes('Content-Type')] = bytes('application/json')
         return self.to_json(data)
 
-    def _build_datasets(self, query):
-        '''Build datasets for display from a queryset'''
-        return [self._build_dataset(dataset, organization) for dataset, organization in query]
+    def _build_territorial_coverage(self, dataset):
+        return {
+            'name': ', '.join(
+                territory.strip().rsplit('/', 1)[-1]
+                for territory in dataset.extras.get('territorial_coverage', '').split(',')
+            ),
+            'granularity': dataset.extras.get('territorial_coverage_granularity', None),
+        }
 
-    def _build_dataset(self, dataset, organization):
+    def _build_temporal_coverage(self, dataset):
         temporal_coverage = {
             'from': dataset.extras.get('temporal_coverage_from', None),
             'to': dataset.extras.get('temporal_coverage_to', None),
@@ -49,17 +54,21 @@ class YouckanBaseController(toolkit.BaseController):
         except:
             pass
 
+        return temporal_coverage
+
+    def _build_datasets(self, query):
+        '''Build datasets for display from a queryset'''
+        return [self._build_dataset(dataset, organization) for dataset, organization in query]
+
+    def _build_dataset(self, dataset, organization):
         return {
             'name': dataset.name,
             'title': dataset.title,
             'display_name': dataset.title or dataset.name,
             'notes': dataset.notes,
             'organization': self._build_organization(organization),
-            'temporal_coverage': temporal_coverage,
-            'territorial_coverage': {
-                'name': dataset.extras.get('territorial_coverage', None),
-                'granularity': dataset.extras.get('territorial_coverage_granularity', None),
-            },
+            'temporal_coverage': self._build_temporal_coverage(dataset),
+            'territorial_coverage': self._build_territorial_coverage(dataset),
             'periodicity': dataset.extras.get('dct:accrualPeriodicity', None),
         }
 
