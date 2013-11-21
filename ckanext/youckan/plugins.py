@@ -14,6 +14,7 @@ URLS = {
     'profile': (
         ('youckan_profile', '/youckan/profile/:username', 'profile'),
         ('youckan_my_datasets', '/youckan/profile/:username/datasets', 'my_datasets'),
+        ('youckan_my_privates', '/youckan/profile/:username/privates', 'my_privates'),
         ('youckan_my_organizations', '/youckan/profile/:username/organizations', 'my_organizations'),
         ('youckan_my_valorizations', '/youckan/profile/:username/valorizations', 'my_valorizations'),
         ('youckan_my_usefuls', '/youckan/profile/:username/usefuls', 'my_usefuls'),
