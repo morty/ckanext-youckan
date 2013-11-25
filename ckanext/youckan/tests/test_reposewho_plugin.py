@@ -44,6 +44,10 @@ plugins = youckan
 plugins = youckan
 '''
 
+SECRET = 'SECRET_KEY'
+AUTH_COOKIE_NAME = 'youckan.auth'
+SESSION_COOKIE_NAME = 'youckan.session'
+
 
 class YouckanAuthPluginTest(unittest2.TestCase):
 
@@ -101,10 +105,10 @@ class YouckanAuthPluginTest(unittest2.TestCase):
         identity = plugin.identify(environ)
         self.assertEquals(identity, None)
 
-    def set_session_cookie(self, request, session_id):
+    def _set_session_cookie(self, request, session_id):
         pass
 
-    def set_auth_cookie(self, request, session_id, username, secret):
+    def _set_auth_cookie(self, request, session_id, username, secret):
         pass
 
     @httpretty.activate

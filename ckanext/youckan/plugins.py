@@ -18,7 +18,7 @@ URLS = {
         ('youckan_my_datasets', '/youckan/profile/:username/datasets', 'my_datasets'),
         ('youckan_my_privates', '/youckan/profile/:username/privates', 'my_privates'),
         ('youckan_my_organizations', '/youckan/profile/:username/organizations', 'my_organizations'),
-        ('youckan_my_valorizations', '/youckan/profile/:username/valorizations', 'my_valorizations'),
+        ('youckan_my_reuses', '/youckan/profile/:username/reuses', 'my_reuses'),
         ('youckan_my_usefuls', '/youckan/profile/:username/usefuls', 'my_usefuls'),
     ),
     'dataset': (
@@ -42,16 +42,19 @@ def _no_permissions(context, msg):
     return {'success': False, 'msg': msg.format(user=user)}
 
 
-# @toolkit.auth_sysadmins_check
-# def user_create(context, data_dict):
-#     msg = toolkit._('Users cannot be created.')
-#     return _no_permissions(context, msg)
+@toolkit.auth_sysadmins_check
+def user_create(context, data_dict):
+    print 'User create'
+    return {'success': True}
+    # import ipdb; ipdb.set_trace()
+    # msg = toolkit._('Users cannot be created.')
+    # return _no_permissions(context, msg)
 
 
-# @toolkit.auth_sysadmins_check
-# def user_update(context, data_dict):
-#     msg = toolkit._('Users cannot be edited.')
-#     return _no_permissions(context, msg)
+@toolkit.auth_sysadmins_check
+def user_update(context, data_dict):
+    print 'User update'
+    return {'success': True}
 
 
 @toolkit.auth_sysadmins_check
@@ -118,8 +121,8 @@ class YouckanPlugin(plugins.SingletonPlugin):
 
         # we need to prevent some actions being authorized.
         return {
-            # 'user_create': user_create,
-            # 'user_update': user_update,
+            'user_create': user_create,
+            'user_update': user_update,
             'user_reset': user_reset,
             'request_reset': request_reset,
         }

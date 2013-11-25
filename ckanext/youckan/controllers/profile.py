@@ -25,7 +25,7 @@ class YouckanProfileController(YouckanBaseController):
         data = {
             'name': username,
             'datasets': self._build_datasets(self._my_datasets_query(user).limit(20)),
-            'valorizations': list(self._my_valorizations_query(user).limit(20)),
+            'reuses': list(self._my_reuses_query(user).limit(20)),
             'usefuls': self._build_datasets(self._my_usefuls_query(user).limit(20)),
             'organizations': self._build_organizations(self._my_organizations_query(user).limit(20)),
         }
@@ -47,11 +47,11 @@ class YouckanProfileController(YouckanBaseController):
         queryset = self._my_datasets_query(user, True).limit(20)
         return self.json_response(self._build_datasets(queryset))
 
-    def my_valorizations(self, username):
+    def my_reuses(self, username):
         user = model.User.get(username)
         if not user:
             return toolkit.abort(404, 'User {0} not found'.format(username))
-        queryset = self._my_valorizations_query(user).limit(20)
+        queryset = self._my_reuses_query(user).limit(20)
         return self.json_response(list(queryset))
 
     def my_organizations(self, username):
@@ -73,9 +73,9 @@ class YouckanProfileController(YouckanBaseController):
         datasets = datasets.join(model.PackageRole).filter_by(user=user, role=model.Role.ADMIN)
         return datasets
 
-    def _my_valorizations_query(self, user):
-        valorizations = DB.query(model.Related).filter(model.Related.owner_id == user.id)
-        return valorizations
+    def _my_reuses_query(self, user):
+        reuses = DB.query(model.Related).filter(model.Related.owner_id == user.id)
+        return reuses
 
     def _my_organizations_query(self, user):
         organizations = queries.organizations_and_counters()
