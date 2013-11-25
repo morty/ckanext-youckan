@@ -11,7 +11,7 @@ from ckan.plugins import toolkit
 
 from ckanext.youckan.controllers.base import YouckanBaseController
 
-DBSession = model.meta.Session
+DB = model.meta.Session
 
 log = logging.getLogger(__name__)
 

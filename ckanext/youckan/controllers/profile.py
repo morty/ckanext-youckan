@@ -11,7 +11,7 @@ from ckan.plugins import toolkit
 from ckanext.youckan import queries
 from ckanext.youckan.controllers.base import YouckanBaseController
 
-DBSession = model.meta.Session
+DB = model.meta.Session
 
 log = logging.getLogger(__name__)
 
@@ -74,7 +74,7 @@ class YouckanProfileController(YouckanBaseController):
         return datasets
 
     def _my_valorizations_query(self, user):
-        valorizations = DBSession.query(model.Related).filter(model.Related.owner_id == user.id)
+        valorizations = DB.query(model.Related).filter(model.Related.owner_id == user.id)
         return valorizations
 
     def _my_organizations_query(self, user):

@@ -3,7 +3,7 @@ YouCKAN CKAN extension
 
 The YouCKAN extension is a YouCKAN connector for CKAN.
 
-NOTE: This extension requires ckan version 1.7 or higher.
+NOTE: This extension has only been texted with CKAN 2.1.
 
 Activating and Installing
 -------------------------

@@ -11,7 +11,7 @@ from ckan.plugins import toolkit
 
 from ckanext.youckan.utils import YouckanJsonEncoder
 
-DBSession = model.meta.Session
+DB = model.meta.Session
 
 log = logging.getLogger(__name__)
 
@@ -19,10 +19,10 @@ log = logging.getLogger(__name__)
 class YouckanBaseController(toolkit.BaseController):
 
     def query(self, *args, **kwargs):
-        return DBSession.query(*args, **kwargs)
+        return DB.query(*args, **kwargs)
 
     def commit(self):
-        DBSession.commit()
+        DB.commit()
 
     def to_json(self, data):
         return json.dumps(data, cls=YouckanJsonEncoder)

@@ -6,6 +6,8 @@ import logging
 from ckan import plugins
 from ckan.plugins import toolkit
 
+from ckanext.youckan.models import setup as model_setup
+
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +23,11 @@ URLS = {
     ),
     'dataset': (
         ('youckan_fork', '/youckan/dataset/:dataset_name/fork', 'fork'),
+    ),
+    'organization': (
+        ('youckan:membership-request', '/youckan/organization/:org_name/membership', 'membership_request'),
+        ('youckan:membership-accept', '/youckan/membership/:request_id/accept', 'membership_accept'),
+        ('youckan:membership-refuse', '/youckan/membership/:request_id/refuse', 'membership_refuse'),
     ),
     'reuse': (
         # ('youckan_reuse_featured', '/youckan/dataset/:dataset_name/reuse/:reuse_id/featured', 'toggle_featured'),
@@ -64,6 +71,7 @@ class YouckanPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IAuthenticator, inherit=True)
     plugins.implements(plugins.IAuthFunctions, inherit=True)
     plugins.implements(plugins.IConfigurable)
+    plugins.implements(plugins.IConfigurer)
 
     def before_map(self, map):
         for basename, mapping in URLS.items():
@@ -74,9 +82,17 @@ class YouckanPlugin(plugins.SingletonPlugin):
 
     def configure(self, config):
         '''Store the YouCKAN configuration'''
+        if not toolkit.check_ckan_version('2.1'):
+            log.warn('This extension has only been tested on CKAN 2.1!')
+
         self.use_auth = toolkit.asbool(config.get('youckan.use_auth', False))
         if self.use_auth:
             self.logout_url = config['youckan.logout_url']
+
+        model_setup()
+
+    def update_config(self, config):
+        toolkit.add_template_directory(config, 'templates')
 
     def login(self):
         '''Trigger a repose.who challenge'''
