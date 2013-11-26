@@ -34,10 +34,10 @@ class YouckanBaseController(toolkit.BaseController):
     def _build_territorial_coverage(self, dataset):
         return {
             'name': ', '.join(
-                territory.strip().rsplit('/', 1)[-1]
+                territory.strip().rsplit('/', 1)[-1].title()
                 for territory in dataset.extras.get('territorial_coverage', '').split(',')
             ),
-            'granularity': dataset.extras.get('territorial_coverage_granularity', None),
+            'granularity': dataset.extras.get('territorial_coverage_granularity', '').title() or None,
         }
 
     def _build_temporal_coverage(self, dataset):
