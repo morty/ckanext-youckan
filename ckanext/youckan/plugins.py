@@ -22,7 +22,7 @@ URLS = {
         ('youckan_my_usefuls', '/youckan/profile/:username/usefuls', 'my_usefuls'),
     ),
     'dataset': (
-        ('youckan_fork', '/youckan/dataset/:dataset_name/fork', 'fork'),
+        ('youckan:dataset-fork', '/youckan/dataset/:dataset_name/fork', 'fork'),
     ),
     'organization': (
         ('youckan:membership-request', '/youckan/organization/:org_name/membership', 'membership_request'),
@@ -53,7 +53,7 @@ def user_create(context, data_dict):
 
 @toolkit.auth_sysadmins_check
 def user_update(context, data_dict):
-    print 'User update'
+    print 'User update', context, data_dict
     return {'success': True}
 
 
