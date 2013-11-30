@@ -52,7 +52,7 @@ class YouckanDatasetController(YouckanBaseController):
         ]
         groups = [{'id': g.id} for g in dataset.get_groups()]
         tags = [{'name': t.name, 'vocabulary_id': t.vocabulary_id} for t in dataset.get_tags()]
-        extras = [{'key': key, 'value': value} for key, value in dataset.extras.items()]
+        extras = [{'key': key, 'value': value} for key, value in dataset.extras.items() if key != 'supplier_id']
 
         forked = toolkit.get_action('package_create')(data_dict={
             'name': forked_name,
