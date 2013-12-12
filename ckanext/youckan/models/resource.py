@@ -41,6 +41,9 @@ class CommunityResource(Base):
     format = Column(types.UnicodeText)
     description = Column(types.UnicodeText)
 
+    publish_as_id = Column(types.UnicodeText, ForeignKey(model.Group.id), nullable=False, index=True)
+    publish_as = relationship(model.Group, primaryjoin=publish_as_id == model.Group.id)
+
     created = Column(types.DateTime, default=datetime.now)
     last_modified = Column(types.DateTime, default=datetime.now, onupdate=datetime.now)
 
