@@ -34,7 +34,7 @@ To use YouCKAN users and authentification, set you who.ini like this:
 
     [general]
     request_classifier = repoze.who.classifiers:default_request_classifier
-    challenge_decider = repoze.who.classifiers:default_challenge_decider
+    challenge_decider = youckan
 
     [identifiers]
     plugins = youckan

@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import hashlib
-import hmac
 import logging
-
-from base64 import b64encode
-
 
 from urllib import quote
 
@@ -14,7 +9,8 @@ from ckan.model import User
 
 from itsdangerous import URLSafeTimedSerializer, BadSignature
 
-from repoze.who.interfaces import IIdentifier, IAuthenticator, IChallenger
+from repoze.who.interfaces import IIdentifier, IAuthenticator, IChallenger, IChallengeDecider
+from repoze.who.classifiers import default_challenge_decider
 from webob import Request, Response
 from zope.interface import implements
 
@@ -27,7 +23,7 @@ def plugin(**kwargs):
 
 class YouckanAuthPlugin(object):
 
-    implements(IIdentifier, IChallenger, IAuthenticator)
+    implements(IIdentifier, IChallenger, IAuthenticator, IChallengeDecider)
 
     def __init__(self, secret=None, login_url=None, session_cookie_name='sessionid',
             auth_cookie_name='youckan.auth', next_url_name='next', https=False):
@@ -41,11 +37,25 @@ class YouckanAuthPlugin(object):
         self.login_url = login_url
         self.next_url_name = next_url_name
         self.use_https = https
+        self.marker_cookie_name = '{0}.logged'.format(auth_cookie_name)
         self.signer = URLSafeTimedSerializer(secret, signer_kwargs={'sep': ':'})
+
+    def __call__(self, environ, status, headers):
+        '''Challenge if marker present and not in https'''
+        request = Request(environ)
+        if self.use_https and self.marker_cookie_name in request.cookies and not request.scheme == 'https':
+            return True
+        return default_challenge_decider(environ, status, headers)
 
     def challenge(self, environ, status, app_headers=(), forget_headers=()):
         '''Redirect to YouCKAN login page'''
         request = Request(environ)
+
+        if self.use_https and self.marker_cookie_name in request.cookies and not request.scheme == 'https':
+            response = Response()
+            response.status = 302
+            response.location = request.url.replace('http://', 'https://')
+            return response
 
         next_url = quote(request.url)
         if self.use_https and next_url.startswith('http://'):
