@@ -30,6 +30,7 @@ To use YouCKAN users and authentification, set you who.ini like this:
     auth_cookie_name = youckan_auth
     login_url = http://sso.etalab.dev/login/
     secret = YOUR_DJANGO_SECRET_KEY
+    https = true
 
     [general]
     request_classifier = repoze.who.classifiers:default_request_classifier

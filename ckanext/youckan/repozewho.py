@@ -30,7 +30,7 @@ class YouckanAuthPlugin(object):
     implements(IIdentifier, IChallenger, IAuthenticator)
 
     def __init__(self, secret=None, login_url=None, session_cookie_name='sessionid',
-            auth_cookie_name='youckan.auth', next_url_name='next'):
+            auth_cookie_name='youckan.auth', next_url_name='next', https=False):
 
         if not secret or not login_url:
             raise ValueError('secret and login_url parameters are required')
@@ -47,6 +47,8 @@ class YouckanAuthPlugin(object):
         request = Request(environ)
 
         next_url = quote(request.url)
+        if https and next_url.startswith('http://'):
+            next_url = next_url.replace('http://, https://')
         auth_url = '{0}?{1}={2}'.format(self.login_url, self.next_url_name, next_url)
 
         response = Response()
