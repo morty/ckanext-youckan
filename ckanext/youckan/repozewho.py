@@ -12,6 +12,8 @@ from urllib import quote
 
 from ckan.model import User
 
+from itsdangerous import URLSafeTimedSerializer, BadSignature
+
 from repoze.who.interfaces import IIdentifier, IAuthenticator, IChallenger
 from webob import Request, Response
 from zope.interface import implements
@@ -38,6 +40,7 @@ class YouckanAuthPlugin(object):
         self.secret = secret
         self.login_url = login_url
         self.next_url_name = next_url_name
+        self.signer = URLSafeTimedSerializer(secret, signer_kwargs={'sep': ':'})
 
     def challenge(self, environ, status, app_headers=(), forget_headers=()):
         '''Redirect to YouCKAN login page'''
@@ -60,13 +63,12 @@ class YouckanAuthPlugin(object):
             return None
 
         session_id = request.cookies[self.session_cookie_name]
-        signature, username = self.extract_cookie(request.cookies[self.auth_cookie_name])
+        cookie = request.cookies[self.auth_cookie_name]
 
-        if not username or not signature:
-            return None
-
-        if not signature == self.sign(username, session_id):
+        try:
+            username = self.signer.loads(cookie, salt=session_id)
             log.debug('Signature ID mismatch: %s', username)
+        except BadSignature:
             return None
 
         return {'username': username}
@@ -89,12 +91,3 @@ class YouckanAuthPlugin(object):
     def forget(self, request, environ):
         '''Forget is YouCKAN SSO responsibility'''
         pass
-
-    def extract_cookie(self, cookie):
-        '''Extract information from YouCKAN cookie'''
-        parts = cookie.split('::')
-        return parts if len(parts) == 2 else (None, None)
-
-    def sign(self, message, salt):
-        secret = self.secret + salt
-        return b64encode(hmac.new(secret, message, digestmod=hashlib.sha256).digest())
