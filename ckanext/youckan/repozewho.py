@@ -40,6 +40,7 @@ class YouckanAuthPlugin(object):
         self.secret = secret
         self.login_url = login_url
         self.next_url_name = next_url_name
+        self.use_https = https
         self.signer = URLSafeTimedSerializer(secret, signer_kwargs={'sep': ':'})
 
     def challenge(self, environ, status, app_headers=(), forget_headers=()):
@@ -47,7 +48,7 @@ class YouckanAuthPlugin(object):
         request = Request(environ)
 
         next_url = quote(request.url)
-        if https and next_url.startswith('http://'):
+        if self.use_https and next_url.startswith('http://'):
             next_url = next_url.replace('http://, https://')
         auth_url = '{0}?{1}={2}'.format(self.login_url, self.next_url_name, next_url)
 
