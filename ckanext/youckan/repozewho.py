@@ -36,7 +36,7 @@ class YouckanAuthPlugin(object):
         self.secret = secret
         self.login_url = login_url
         self.next_url_name = next_url_name
-        self.use_https = https
+        self.use_https = https is True or https == 'true'
         self.marker_cookie_name = '{0}.logged'.format(auth_cookie_name)
         self.signer = URLSafeTimedSerializer(secret, signer_kwargs={'sep': ':'})
 
