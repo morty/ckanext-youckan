@@ -44,6 +44,7 @@ class YouckanAuthPlugin(object):
         '''Challenge if marker present and not in https'''
         request = Request(environ)
         if self.use_https and self.marker_cookie_name in request.cookies and not request.scheme == 'https':
+            request.environ['need.https'] = True
             return True
         return default_challenge_decider(environ, status, headers)
 
@@ -51,7 +52,7 @@ class YouckanAuthPlugin(object):
         '''Redirect to YouCKAN login page'''
         request = Request(environ)
 
-        if self.use_https and self.marker_cookie_name in request.cookies and not request.scheme == 'https':
+        if request.environ.get('need.https', False):
             response = Response()
             response.status = 302
             response.location = request.url.replace('http://', 'https://')
