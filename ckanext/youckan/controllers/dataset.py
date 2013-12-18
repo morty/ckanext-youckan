@@ -6,9 +6,10 @@ import logging
 from uuid import uuid1
 
 from ckan import model
-from ckan.model import Package, PackageRole
+from ckan.model import Package
 from ckan.plugins import toolkit
 
+from ckanext.youckan.models import DatasetAlert
 from ckanext.youckan.controllers.base import YouckanBaseController
 
 DB = model.meta.Session
@@ -87,4 +88,35 @@ class YouckanDatasetController(YouckanBaseController):
         })
 
         return self.json_response(Package.by_name(forked_name))
+
+    def alert(self, dataset_name):
+        '''
+        Put an alert aka. a signalement on a dataset.
+        '''
+        if not toolkit.request.method == 'POST':
+            raise toolkit.abort(400, 'Expected POST method')
+
+        user = toolkit.c.userobj
+        if not user:
+            raise toolkit.NotAuthorized('Membership request requires an user')
+
+        dataset = Package.by_name(dataset_name)
+
+        alert_type = toolkit.request.POST['type']
+        comment = toolkit.request.POST['comment']
+        alert = DatasetAlert(dataset, user, alert_type, comment)
+        DB.add(alert)
+        DB.commit()
+
+        # alert.notify_admins()
+
+        return self.json_response({
+            'id': alert.id,
+            'user_id': alert.user_id,
+            'dataset_id': alert.dataset_id,
+            'type': alert.type,
+            'comment': alert.comment,
+            'created': alert.created
+        })
+
 
