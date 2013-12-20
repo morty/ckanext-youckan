@@ -40,10 +40,16 @@ class YouckanAuthPlugin(object):
         self.marker_cookie_name = '{0}.logged'.format(auth_cookie_name)
         self.signer = URLSafeTimedSerializer(secret, signer_kwargs={'sep': ':'})
 
+        log.debug('YouckanAuth https: %s', self.use_https)
+        log.debug('YouckanAuth session cookie: %s', self.session_cookie_name)
+        log.debug('YouckanAuth auth cookie: %s', self.auth_cookie_name)
+        log.debug('YouckanAuth marker cookie: %s', self.marker_cookie_name)
+
     def __call__(self, environ, status, headers):
         '''Challenge if marker present and not in https'''
         request = Request(environ)
         if self.needs_redirect(request):
+            log.debug('Challenge decider: needs redirect')
             return True
         return default_challenge_decider(environ, status, headers)
 
@@ -52,6 +58,7 @@ class YouckanAuthPlugin(object):
         request = Request(environ)
 
         if self.needs_redirect(request):
+            log.debug('Challenge: needs redirect')
             response = Response()
             response.status = 302
             response.location = request.url.replace('http://', 'https://')
@@ -73,6 +80,7 @@ class YouckanAuthPlugin(object):
         request = Request(environ)
 
         if not self.session_cookie_name in request.cookies or not self.auth_cookie_name in request.cookies:
+            log.debug('Identify: cookie not found')
             return None
 
         session_id = request.cookies[self.session_cookie_name]
