@@ -114,4 +114,7 @@ class YouckanAuthPlugin(object):
         pass
 
     def needs_redirect(self, request):
+        log.debug('Request scheme: %s', request.scheme)
+        log.debug('Request cookies: %s', request.cookies)
+        log.debug('Request cookie in: %s', self.marker_cookie_name in request.cookies)
         return self.use_https and self.marker_cookie_name in request.cookies and not request.scheme == 'https'
