@@ -49,7 +49,6 @@ class YouckanAuthPlugin(object):
         '''Challenge if marker present and not in https'''
         request = Request(environ)
         if self.needs_redirect(request):
-            log.debug('Challenge decider: needs redirect')
             return True
         return default_challenge_decider(environ, status, headers)
 
@@ -58,7 +57,6 @@ class YouckanAuthPlugin(object):
         request = Request(environ)
 
         if self.needs_redirect(request):
-            log.debug('Challenge: needs redirect')
             response = Response()
             response.status = 302
             response.location = request.url.replace('http://', 'https://')
@@ -80,7 +78,6 @@ class YouckanAuthPlugin(object):
         request = Request(environ)
 
         if not self.session_cookie_name in request.cookies or not self.auth_cookie_name in request.cookies:
-            log.debug('Identify: cookie not found')
             return None
 
         session_id = request.cookies[self.session_cookie_name]
@@ -114,7 +111,4 @@ class YouckanAuthPlugin(object):
         pass
 
     def needs_redirect(self, request):
-        log.debug('Request scheme: %s', request.scheme)
-        log.debug('Request cookies: %s', request.cookies)
-        log.debug('Request cookie in: %s', self.marker_cookie_name in request.cookies)
         return self.use_https and self.marker_cookie_name in request.cookies and not request.scheme == 'https'
