@@ -22,10 +22,12 @@ class ReuseAsOrganization(Base):
     __tablename__ = 'reuse_as_org'
 
     reuse_id = Column(types.UnicodeText, ForeignKey(model.Related.id), nullable=False, primary_key=True)
-    reuse = relationship(model.Related, primaryjoin=reuse_id == model.Related.id)
+    reuse = relationship(model.Related, primaryjoin=reuse_id == model.Related.id,
+        backref=backref('published_as', cascade='all,delete'))
 
     organization_id = Column(types.UnicodeText, ForeignKey(model.Group.id), nullable=False, index=True)
-    organization = relationship(model.Group, primaryjoin=organization_id == model.Group.id)
+    organization = relationship(model.Group, primaryjoin=organization_id == model.Group.id,
+        backref=backref('reuse_published_as', cascade='all,delete'))
 
     def __init__(self, reuse, organization):
         self.reuse = reuse

@@ -38,10 +38,12 @@ class MembershipRequest(Base):
     id = Column(types.UnicodeText, primary_key=True, default=make_uuid)
 
     user_id = Column(types.UnicodeText, ForeignKey(model.User.id), nullable=False, index=True)
-    user = relationship(model.User, primaryjoin=user_id == model.User.id)
+    user = relationship(model.User, primaryjoin=user_id == model.User.id,
+        backref=backref('membership_requests', cascade='all,delete'))
 
     organization_id = Column(types.UnicodeText, ForeignKey(model.Group.id), nullable=False, index=True)
-    organization = relationship(model.Group, primaryjoin=organization_id == model.Group.id)
+    organization = relationship(model.Group, primaryjoin=organization_id == model.Group.id,
+        backref=backref('membership_requests', cascade='all,delete'))
 
     status = Column(types.Unicode(8), nullable=False, index=True, default=Status.PENDING)
 

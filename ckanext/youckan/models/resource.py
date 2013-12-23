@@ -31,10 +31,12 @@ class CommunityResource(Base):
     id = Column(types.UnicodeText, primary_key=True, default=make_uuid)
 
     owner_id = Column(types.UnicodeText, ForeignKey(model.User.id), nullable=False, index=True)
-    owner = relationship(model.User, primaryjoin=owner_id == model.User.id, backref='community_resources')
+    owner = relationship(model.User, primaryjoin=owner_id == model.User.id,
+        backref=backref('community_resources', cascade='all,delete'))
 
     dataset_id = Column(types.UnicodeText, ForeignKey(model.Package.id), nullable=False, index=True)
-    dataset = relationship(model.Package, primaryjoin=dataset_id == model.Package.id, backref='community_resources')
+    dataset = relationship(model.Package, primaryjoin=dataset_id == model.Package.id,
+        backref=backref('community_resources', cascade='all,delete'))
 
     name = Column(types.UnicodeText)
     url = Column(types.UnicodeText, nullable=False)
