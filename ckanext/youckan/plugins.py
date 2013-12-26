@@ -70,6 +70,14 @@ def request_reset(context, data_dict):
     return _no_permissions(context, msg)
 
 
+class SentryPlugin(plugins.SingletonPlugin):
+    plugins.implements(plugins.IMiddleware)
+
+    def make_middleware(self, app, config):
+        from raven.contrib.pylons import Sentry
+        return Sentry(app, config)
+
+
 class YouckanPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IRoutes, inherit=True)
     plugins.implements(plugins.IAuthenticator, inherit=True)

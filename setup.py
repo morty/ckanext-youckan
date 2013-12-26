@@ -2,10 +2,13 @@
 # -*- coding: utf-8 -*-
 import re
 
+from os.path import join
+
 from setuptools import setup, find_packages
 
 from ckanext.youckan import __version__, __description__
 
+RE_REQUIREMENT = re.compile(r'^\s*-r\s*(?P<filename>.*)$')
 
 PYPI_RST_FILTERS = (
     # Remove travis ci badge
@@ -30,6 +33,21 @@ def rst(filename):
     return content
 
 
+def pip(filename):
+    '''Parse pip requirement file and transform it to setuptools requirements'''
+    requirements = []
+    for line in open(join('requirements', filename)).readlines():
+        line = line.split('#')[0].strip()  # Remove comments
+        if not line:
+            continue
+        match = RE_REQUIREMENT.match(line)
+        if match:
+            requirements.extend(pip(match.group('filename')))
+        elif not line.startswith('-e'):
+            requirements.append(line)
+    return requirements
+
+
 long_description = '\n'.join((
     rst('README.rst'),
     rst('CHANGELOG.rst'),
@@ -50,11 +68,16 @@ setup(
     namespace_packages=['ckanext'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[],
+    install_requires=pip('install.pip'),
     entry_points={
         'ckan.plugins': [
             'youckan = ckanext.youckan.plugins:YouckanPlugin',
+            'sentry = ckanext.youckan.plugins:SentryPlugin',
         ]
+    },
+    extras_require={
+        'test': pip('test.pip'),
+        'sentry': pip('sentry.pip'),
     },
     classifiers=[
         "Development Status :: 3 - Alpha",
