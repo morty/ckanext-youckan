@@ -1,6 +1,8 @@
-As an administrator of {{ alert.dataset.title }},
-you are being notified than a new alert has been emit from {{ alert.user.fullname }}
-with the following comment:
+As an administrator of "{{ alert.dataset.title }}",
+you are being notified than {{ alert.user.fullname }} emitted an alert on your dataset:
+
+Type: {{ alert.type }}
+Comment:
 
 {{ alert.comment }}
 

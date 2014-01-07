@@ -95,7 +95,7 @@ class DatasetAlert(Base):
             id=self.dataset.name,
         ))
         body = toolkit.render(template, {
-            'alter': self,
+            'alert': self,
             'user': user,
             'dataset_url': dataset_url,
             'site_title': g.site_title,
@@ -108,19 +108,15 @@ class DatasetAlert(Base):
 
         organization = model.Group.get(self.dataset.owner_org) if self.dataset.owner_org else None
 
-        admins = DB.query(model.User)
+        admins = DB.query(model.User).filter(model.User.sysadmin == True)
+        for admin in admins:
+            self.send_mail(admin, subject, 'youckan/mail_new_alert.html')
+        
+        admin_ids = (u[0] for u in admins.values('id'))
         if organization:
-            admins.join(model.GroupRole)
-            admins = admins.filter(sql.or_(
-                model.User.sysadmin == True,
-                sql.and_(
-                    model.GroupRole.group_id == organization.id,
-                    model.GroupRole.role == model.Role.ADMIN
-                )
-            ))
-        else:
-            admins = admins.filter(model.User.sysadmin == True)
-
-        for admin in admins.all():
-            print 'send mail admin', subject, admin.fullname
-            # self.send_mail(admin, subject, 'youckan/mail_new_alert.html')
+            org_admins = DB.query(model.User).join(model.GroupRole)
+            org_admins = org_admins.filter(model.GroupRole.group_id == organization.id)
+            org_admins = org_admins.filter(model.GroupRole.role == model.Role.ADMIN)
+            org_admins = org_admins.filter(~model.User.id.in_(admin_ids))
+            for admin in org_admins:
+                self.send_mail(admin, subject, 'youckan/mail_new_alert.html')

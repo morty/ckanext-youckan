@@ -108,7 +108,7 @@ class YouckanDatasetController(YouckanBaseController):
         DB.add(alert)
         DB.commit()
 
-        # alert.notify_admins()
+        alert.notify_admins()
 
         return self.json_response({
             'id': alert.id,
@@ -118,5 +118,3 @@ class YouckanDatasetController(YouckanBaseController):
             'comment': alert.comment,
             'created': alert.created
         })
-
-
