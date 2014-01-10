@@ -88,6 +88,9 @@ class MembershipRequest(Base):
     def send_mail(self, user, subject, template, extra=None):
         from ckan.lib.mailer import mail_user
 
+        if not user.email:
+            return
+
         org_url = urljoin(g.site_url, toolkit.url_for(
             controller='organization',
             action='read',
