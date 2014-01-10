@@ -78,7 +78,7 @@ class DatasetAlert(Base):
         return DB.query(cls).filter(cls.id == id).one()
 
     @classmethod
-    def not_closed_for(cls, dataset):
+    def get_open_for(cls, dataset):
         not_closed = DB.query(cls).filter(cls.closed == None)
         if isinstance(dataset, model.Package):
             not_closed = not_closed.filter(cls.dataset == dataset)
@@ -104,14 +104,14 @@ class DatasetAlert(Base):
         mail_user(user, subject, body)
 
     def notify_admins(self):
-        subject = 'New alert for {0}'.format(self.dataset.title)
+        subject = toolkit._('New alert for {0}').format(self.dataset.title)
 
         organization = model.Group.get(self.dataset.owner_org) if self.dataset.owner_org else None
 
         admins = DB.query(model.User).filter(model.User.sysadmin == True)
         for admin in admins:
             self.send_mail(admin, subject, 'youckan/mail_new_alert.html')
-        
+
         admin_ids = (u[0] for u in admins.values('id'))
         if organization:
             org_admins = DB.query(model.User).join(model.GroupRole)

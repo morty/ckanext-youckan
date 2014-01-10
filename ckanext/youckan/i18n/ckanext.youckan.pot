@@ -1,0 +1,47 @@
+# Translations template for ckanext-youckan.
+# Copyright (C) 2014 ORGANIZATION
+# This file is distributed under the same license as the ckanext-youckan project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ckanext-youckan 0.1.0.dev\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2014-01-10 15:49+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: ckanext/youckan/plugins.py:63 ckanext/youckan/plugins.py:69
+msgid "Users cannot reset passwords."
+msgstr ""
+
+#: ckanext/youckan/plugins.py:116
+msgid "Login required!"
+msgstr ""
+
+#: ckanext/youckan/models/alert.py:107
+msgid "New alert for {0}"
+msgstr ""
+
+#: ckanext/youckan/templates/youckan/mail_new_alert.html:1
+#, python-format
+msgid ""
+"As an administrator of \"%(dataset)s\",\n"
+"you are being notified than %(username)s emitted an alert on your dataset:\n"
+"\n"
+"Type: %(type)s\n"
+"Comment:\n"
+"\n"
+"%(comment)s\n"
+"\n"
+"\n"
+"You can go to the dataset page:\n"
+"%(dataset_url)s\n"
+msgstr ""
+

@@ -1,11 +1,18 @@
-As an administrator of "{{ alert.dataset.title }}",
-you are being notified than {{ alert.user.fullname }} emitted an alert on your dataset:
+{% trans
+	username=alert.user.fullname,
+	dataset=alert.dataset.title,
+	type=alert.type,
+	comment=alert.comment,
+	dataset_url=dataset_url
+%}As an administrator of "{{ dataset }}",
+you are being notified than {{ username }} emitted an alert on your dataset:
 
-Type: {{ alert.type }}
+Type: {{ type }}
 Comment:
 
-{{ alert.comment }}
+{{ comment }}
 
 
 You can go to the dataset page:
 {{ dataset_url }}
+{% endtrans %}

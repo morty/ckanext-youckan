@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[ckanext-youckan.python]
+file_filter = ckanext/youckan/i18n/<lang>/LC_MESSAGES/ckanext.youckan.po
+source_file = ckanext/youckan/i18n/ckanext.youckan.pot
+source_lang = en
+type = PO
