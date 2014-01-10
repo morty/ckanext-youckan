@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-youckan 0.1.0.dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-10 15:49+0100\n"
+"POT-Creation-Date: 2014-01-10 16:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,6 +27,47 @@ msgstr ""
 
 #: ckanext/youckan/models/alert.py:107
 msgid "New alert for {0}"
+msgstr ""
+
+#: ckanext/youckan/models/membership.py:106
+msgid "New membership request for {0}"
+msgstr ""
+
+#: ckanext/youckan/models/membership.py:130
+msgid "Membership accepted"
+msgstr ""
+
+#: ckanext/youckan/models/membership.py:136
+msgid "Membership refused"
+msgstr ""
+
+#: ckanext/youckan/templates/youckan/mail_membership_accepted.html:1
+#, python-format
+msgid ""
+"You're membership request for %(organization)s has been accepted.\n"
+"\n"
+"You can go to the orgnization page to see your new status:\n"
+"%(organization_url)s\n"
+msgstr ""
+
+#: ckanext/youckan/templates/youckan/mail_membership_refused.html:1
+#, python-format
+msgid ""
+"You're membership request for %(organization)s has been refused with the following reason:\n"
+"\n"
+"%(comment)s\n"
+msgstr ""
+
+#: ckanext/youckan/templates/youckan/mail_membership_request.html:1
+#, python-format
+msgid ""
+"As an administrator of \"%(organization)s\",\n"
+"you are being notified than a new membership request from %(user)s\n"
+"is pending for approval.\n"
+"\n"
+"\n"
+"You can go to the \"%(organization)s\" page to accept or refuse the request:\n"
+"%(organization_url)s\n"
 msgstr ""
 
 #: ckanext/youckan/templates/youckan/mail_new_alert.html:1

@@ -1,3 +1,7 @@
-You're membership request for {{ membership.organization.display_name }} has been refused with the following reason:
+{% trans
+    organization=membership.organization.display_name,
+    comment=membership.refusal_comment
+%}You're membership request for {{ organization }} has been refused with the following reason:
 
-{{ membership.refusal_comment }}
+{{ comment }}
+{% endtrans %}

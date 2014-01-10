@@ -1,7 +1,12 @@
-As an administrator of {{ membership.organization.display_name }},
-you are being notified than a new membership request from {{ membership.user.fullname}}
+{% trans
+    organization=membership.organization.display_name,
+    organization_url=org_url,
+    user=membership.user.fullname
+%}As an administrator of "{{ organization }}",
+you are being notified than a new membership request from {{ user }}
 is pending for approval.
 
 
-You can go to the {{ membership.organization.display }} page to accept or refuse the request:
-{{ org_url}}
+You can go to the "{{ organization }}" page to accept or refuse the request:
+{{ organization_url}}
+{% endtrans %}

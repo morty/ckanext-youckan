@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-youckan\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-10 15:49+0100\n"
-"PO-Revision-Date: 2014-01-10 14:51+0000\n"
+"POT-Creation-Date: 2014-01-10 16:11+0100\n"
+"PO-Revision-Date: 2014-01-10 15:13+0000\n"
 "Last-Translator: noirbizarre\n"
 "Language-Team: French (http://www.transifex.com/projects/p/ckanext-youckan/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -31,6 +31,47 @@ msgstr "Authentification requise !"
 #: ckanext/youckan/models/alert.py:107
 msgid "New alert for {0}"
 msgstr "Nouvelle alerte pour {0}"
+
+#: ckanext/youckan/models/membership.py:106
+msgid "New membership request for {0}"
+msgstr "Nouvelle demande d'adhésion pour à {0}"
+
+#: ckanext/youckan/models/membership.py:130
+msgid "Membership accepted"
+msgstr "Adhésion acceptée"
+
+#: ckanext/youckan/models/membership.py:136
+msgid "Membership refused"
+msgstr "Adhésion refusée"
+
+#: ckanext/youckan/templates/youckan/mail_membership_accepted.html:1
+#, python-format
+msgid ""
+"You're membership request for %(organization)s has been accepted.\n"
+"\n"
+"You can go to the orgnization page to see your new status:\n"
+"%(organization_url)s\n"
+msgstr "Votre demande d'adhésion à %(organization)s a été acceptée.\n\nVous pouvez vous rendre sur la page pour voir votre nouveau statut:\n%(organization_url)s\n"
+
+#: ckanext/youckan/templates/youckan/mail_membership_refused.html:1
+#, python-format
+msgid ""
+"You're membership request for %(organization)s has been refused with the following reason:\n"
+"\n"
+"%(comment)s\n"
+msgstr "Votre demande d'adhésion à %(organization)s a été refusée pour la raison suivante:\n\n%(comment)s\n"
+
+#: ckanext/youckan/templates/youckan/mail_membership_request.html:1
+#, python-format
+msgid ""
+"As an administrator of \"%(organization)s\",\n"
+"you are being notified than a new membership request from %(user)s\n"
+"is pending for approval.\n"
+"\n"
+"\n"
+"You can go to the \"%(organization)s\" page to accept or refuse the request:\n"
+"%(organization_url)s\n"
+msgstr "En tant qu'administrateur de \"%(organization)s\",\nnous vous informons qu'une nouvelle demande d'adhésion de %(user)s\nest en attende de validation.\n\n\nVous pouvez vous rendre sur la page de \"%(organization)s\" pour accepter ou refuser la demande:\n%(organization_url)s\n"
 
 #: ckanext/youckan/templates/youckan/mail_new_alert.html:1
 #, python-format

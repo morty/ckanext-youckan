@@ -1,4 +1,8 @@
-You're membership request for {{ membership.organization.display_name }} has been accepted.
+{% trans
+    organization=membership.organization.display_name,
+    organization_url=org_url
+%}You're membership request for {{ organization }} has been accepted.
 
 You can go to the orgnization page to see your new status:
-{{ org_url }}
+{{ organization_url }}
+{% endtrans %}
