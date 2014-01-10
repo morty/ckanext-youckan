@@ -18,7 +18,7 @@ from ckan.plugins import toolkit
 log = logging.getLogger(__name__)
 Base = declarative_base()
 DB = model.Session
-
+_ = lambda s: s
 
 def make_uuid():
     return unicode(uuid.uuid4())
@@ -28,6 +28,13 @@ class AlertType(object):
     ILLEGAL = 'illegal'
     TENDENCIOUS = 'tendencious'
     OTHER = 'other'
+
+
+ALERT_TYPE_NAMES = {
+    AlertType.ILLEGAL: _('Illegal content'),
+    AlertType.TENDENCIOUS: _('Tendencious content'),
+    AlertType.OTHER: _('Other'),
+}
 
 
 class DatasetAlert(Base):
@@ -103,7 +110,9 @@ class DatasetAlert(Base):
             'dataset_url': dataset_url,
             'site_title': g.site_title,
             'site_url': g.site_url,
+            'names': ALERT_TYPE_NAMES,
         })
+
         mail_user(user, subject, body)
 
     def notify_admins(self):

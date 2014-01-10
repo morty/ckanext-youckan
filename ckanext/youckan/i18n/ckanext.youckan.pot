@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-youckan 0.1.0.dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-10 16:11+0100\n"
+"POT-Creation-Date: 2014-01-10 17:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,19 +25,31 @@ msgstr ""
 msgid "Login required!"
 msgstr ""
 
-#: ckanext/youckan/models/alert.py:107
+#: ckanext/youckan/models/alert.py:34
+msgid "Illegal content"
+msgstr ""
+
+#: ckanext/youckan/models/alert.py:35
+msgid "Tendencious content"
+msgstr ""
+
+#: ckanext/youckan/models/alert.py:36
+msgid "Other"
+msgstr ""
+
+#: ckanext/youckan/models/alert.py:118
 msgid "New alert for {0}"
 msgstr ""
 
-#: ckanext/youckan/models/membership.py:106
+#: ckanext/youckan/models/membership.py:109
 msgid "New membership request for {0}"
 msgstr ""
 
-#: ckanext/youckan/models/membership.py:130
+#: ckanext/youckan/models/membership.py:133
 msgid "Membership accepted"
 msgstr ""
 
-#: ckanext/youckan/models/membership.py:136
+#: ckanext/youckan/models/membership.py:139
 msgid "Membership refused"
 msgstr ""
 

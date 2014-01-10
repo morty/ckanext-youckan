@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-youckan\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-10 16:11+0100\n"
-"PO-Revision-Date: 2014-01-10 15:13+0000\n"
+"POT-Creation-Date: 2014-01-10 17:03+0100\n"
+"PO-Revision-Date: 2014-01-10 16:04+0000\n"
 "Last-Translator: noirbizarre\n"
 "Language-Team: French (http://www.transifex.com/projects/p/ckanext-youckan/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -28,19 +28,31 @@ msgstr "Les utilisateurs ne peuvent pas réinitialiser leur mot de passe."
 msgid "Login required!"
 msgstr "Authentification requise !"
 
-#: ckanext/youckan/models/alert.py:107
+#: ckanext/youckan/models/alert.py:34
+msgid "Illegal content"
+msgstr "Contenu illégal"
+
+#: ckanext/youckan/models/alert.py:35
+msgid "Tendencious content"
+msgstr "Contenu tendencieux"
+
+#: ckanext/youckan/models/alert.py:36
+msgid "Other"
+msgstr "Autre"
+
+#: ckanext/youckan/models/alert.py:118
 msgid "New alert for {0}"
 msgstr "Nouvelle alerte pour {0}"
 
-#: ckanext/youckan/models/membership.py:106
+#: ckanext/youckan/models/membership.py:109
 msgid "New membership request for {0}"
 msgstr "Nouvelle demande d'adhésion pour à {0}"
 
-#: ckanext/youckan/models/membership.py:130
+#: ckanext/youckan/models/membership.py:133
 msgid "Membership accepted"
 msgstr "Adhésion acceptée"
 
-#: ckanext/youckan/models/membership.py:136
+#: ckanext/youckan/models/membership.py:139
 msgid "Membership refused"
 msgstr "Adhésion refusée"
 
