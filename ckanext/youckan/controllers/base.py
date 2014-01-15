@@ -69,7 +69,7 @@ class YouckanBaseController(toolkit.BaseController):
             'organization': self._build_organization(organization),
             'temporal_coverage': self._build_temporal_coverage(dataset),
             'territorial_coverage': self._build_territorial_coverage(dataset),
-            'periodicity': dataset.extras.get('dct:accrualPeriodicity', None),
+            'periodicity': dataset.extras.get('frequency', None),
             'nb_reuses': len(dataset.related),
         }
 
