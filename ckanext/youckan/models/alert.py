@@ -118,17 +118,28 @@ class DatasetAlert(Base):
     def notify_admins(self):
         subject = toolkit._('New alert for {0}').format(self.dataset.title)
 
-        organization = model.Group.get(self.dataset.owner_org) if self.dataset.owner_org else None
+        owners = DB.query(model.User).join(model.PackageRole)
+        owners = owners.filter(model.PackageRole.package_id == self.dataset.id)
+        owners = owners.filter(model.PackageRole.role == model.Role.ADMIN)
 
         admins = DB.query(model.User).filter(model.User.sysadmin == True)
-        for admin in admins:
-            self.send_mail(admin, subject, 'youckan/mail_new_alert.html')
 
-        admin_ids = (u[0] for u in admins.values('id'))
+        queries = [owners, admins]
+
+        organization = model.Group.get(self.dataset.owner_org) if self.dataset.owner_org else None
         if organization:
-            org_admins = DB.query(model.User).join(model.GroupRole)
-            org_admins = org_admins.filter(model.GroupRole.group_id == organization.id)
-            org_admins = org_admins.filter(model.GroupRole.role == model.Role.ADMIN)
-            org_admins = org_admins.filter(~model.User.id.in_(admin_ids))
-            for admin in org_admins:
-                self.send_mail(admin, subject, 'youckan/mail_new_alert.html')
+            org_members = DB.query(model.User)
+            org_members = org_members.join(model.Member, model.Member.table_id == model.User.id)
+            org_members = org_members.filter(
+                model.Member.group == organization,
+                model.Member.state == 'active',
+                model.Member.table_name == 'user',
+            )
+
+            queries.append(org_members)
+
+        queries = (q.subquery().select() for q in queries)
+        users = DB.query(model.User).select_from(sql.union(*queries))
+
+        for user in users:
+            self.send_mail(user, subject, 'youckan/mail_new_alert.html')
