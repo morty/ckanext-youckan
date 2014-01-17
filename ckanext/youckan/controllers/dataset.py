@@ -98,7 +98,7 @@ class YouckanDatasetController(YouckanBaseController):
 
         user = toolkit.c.userobj
         if not user:
-            raise toolkit.NotAuthorized('Membership request requires an user')
+            raise toolkit.NotAuthorized('Alert creation requires an user')
 
         dataset = Package.by_name(dataset_name)
 
@@ -118,3 +118,32 @@ class YouckanDatasetController(YouckanBaseController):
             'comment': alert.comment,
             'created': alert.created
         })
+
+    def close_alert(self, dataset_name, alert_id):
+        '''Delete an alert'''
+        if not toolkit.request.method == 'POST':
+            raise toolkit.abort(400, 'Expected POST method')
+
+        user = toolkit.c.userobj
+        if not user:
+            raise toolkit.NotAuthorized('You need to be authenticated to delete an alert')
+        elif not user.sysadmin:
+            raise toolkit.NotAuthorized('Only sysadmins can delete alert')
+
+        alert = DatasetAlert.get(alert_id)
+        alert.close(user, toolkit.request.POST.get('comment'))
+        DB.add(alert)
+        DB.commit()
+
+        return self.json_response({
+            'id': alert.id,
+            'user_id': alert.user_id,
+            'dataset_id': alert.dataset_id,
+            'type': alert.type,
+            'comment': alert.comment,
+            'created': alert.created,
+            'closed': alert.closed,
+            'closed_by_id': alert.closed_by_id,
+            'close_comment': alert.close_comment,
+        })
+

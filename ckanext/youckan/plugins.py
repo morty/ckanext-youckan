@@ -24,6 +24,7 @@ URLS = {
     'dataset': (
         ('youckan:dataset-fork', '/youckan/dataset/:dataset_name/fork', 'fork'),
         ('youckan:dataset-alert', '/youckan/dataset/:dataset_name/alert', 'alert'),
+        ('youckan:dataset-alert-close', '/youckan/dataset/:dataset_name/alert/:alert_id/close', 'close_alert'),
     ),
     'organization': (
         ('youckan:membership-request', '/youckan/organization/:org_name/membership', 'membership_request'),

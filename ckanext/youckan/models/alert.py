@@ -93,6 +93,11 @@ class DatasetAlert(Base):
             not_closed = not_closed.filter(cls.dataset_id == dataset)
         return not_closed.all()
 
+    def close(self, user, comment=None):
+        self.closed = datetime.now()
+        self.closed_by = user
+        self.close_comment = comment
+
     def send_mail(self, user, subject, template, extra=None):
         from ckan.lib.mailer import mail_user
 
