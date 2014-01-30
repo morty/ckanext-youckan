@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ckanext-youckan 0.1.0.dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-01-10 17:03+0100\n"
+"POT-Creation-Date: 2014-01-30 13:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: ckanext/youckan/plugins.py:63 ckanext/youckan/plugins.py:69
+#: ckanext/youckan/plugins.py:64 ckanext/youckan/plugins.py:70
 msgid "Users cannot reset passwords."
 msgstr ""
 
-#: ckanext/youckan/plugins.py:116
+#: ckanext/youckan/plugins.py:117
 msgid "Login required!"
 msgstr ""
 
@@ -37,7 +37,7 @@ msgstr ""
 msgid "Other"
 msgstr ""
 
-#: ckanext/youckan/models/alert.py:118
+#: ckanext/youckan/models/alert.py:125
 msgid "New alert for {0}"
 msgstr ""
 
@@ -82,12 +82,26 @@ msgid ""
 "%(organization_url)s\n"
 msgstr ""
 
-#: ckanext/youckan/templates/youckan/mail_new_alert.html:1
+#: ckanext/youckan/templates/youckan/mail_new_alert.html:2
+#, python-format
+msgid "As a sysadmin of \"%(site_title)s\","
+msgstr ""
+
+#: ckanext/youckan/templates/youckan/mail_new_alert.html:4
+#, python-format
+msgid "As a member of \"%(organization)s\","
+msgstr ""
+
+#: ckanext/youckan/templates/youckan/mail_new_alert.html:6
+msgid "As dataset owner, "
+msgstr ""
+
+#: ckanext/youckan/templates/youckan/mail_new_alert.html:8
 #, python-format
 msgid ""
-"As an administrator of \"%(dataset)s\",\n"
 "you are being notified than %(username)s emitted an alert on your dataset:\n"
 "\n"
+"Dataset: %(dataset)s\n"
 "Type: %(type)s\n"
 "Comment:\n"
 "\n"
