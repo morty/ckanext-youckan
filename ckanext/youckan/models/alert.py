@@ -116,6 +116,7 @@ class DatasetAlert(Base):
             'site_title': g.site_title,
             'site_url': g.site_url,
             'names': ALERT_TYPE_NAMES,
+            'organization': model.Group.get(self.dataset.owner_org) if self.dataset.owner_org else None,
         })
 
         mail_user(user, subject, body)

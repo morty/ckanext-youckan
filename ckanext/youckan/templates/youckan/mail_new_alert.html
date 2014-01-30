@@ -1,12 +1,19 @@
+{% if user.sysadmin %}
+    {% trans %}As a sysadmin of "{{ site_title }}",{% endtrans %}
+{% elif organization %}
+    {% trans %}As a member of "{{ organization }}",{% endtrans %}
+{% else %}
+    {% trans %}As dataset owner, {% endtrans %}
+{% endif %}
 {% trans
-	username=alert.user.fullname|safe,
-	dataset=alert.dataset.title|safe,
-	type=names[alert.type]|safe,
-	comment=alert.comment|safe,
-	dataset_url=dataset_url|safe
-%}As an administrator of "{{ dataset }}",
-you are being notified than {{ username }} emitted an alert on your dataset:
+    username=alert.user.fullname|safe,
+    dataset=alert.dataset.title|safe,
+    type=names[alert.type]|safe,
+    comment=alert.comment|safe,
+    dataset_url=dataset_url|safe
+%}you are being notified than {{ username }} emitted an alert on your dataset:
 
+Dataset: {{ dataset }}
 Type: {{ type }}
 Comment:
 
