@@ -31,9 +31,9 @@ class AlertType(object):
 
 
 ALERT_TYPE_NAMES = {
-    AlertType.ILLEGAL: _('Illegal content'),
-    AlertType.TENDENCIOUS: _('Tendencious content'),
-    AlertType.OTHER: _('Other'),
+    AlertType.ILLEGAL: 'Contenu illégal',
+    AlertType.TENDENCIOUS: 'Contenu tendencieux',
+    AlertType.OTHER: 'Autre',
 }
 
 
@@ -122,7 +122,7 @@ class DatasetAlert(Base):
         mail_user(user, subject, body)
 
     def notify_admins(self):
-        subject = toolkit._('New alert for {0}').format(self.dataset.title)
+        subject = 'Nouvelle alerte pour {0}'.format(self.dataset.title)
 
         owners = DB.query(model.User).join(model.PackageRole)
         owners = owners.filter(model.PackageRole.package_id == self.dataset.id)

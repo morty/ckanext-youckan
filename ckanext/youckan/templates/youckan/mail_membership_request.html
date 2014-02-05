@@ -1,12 +1,9 @@
-{% trans
-    organization=membership.organization.display_name,
-    organization_url=org_url,
-    user=membership.user.fullname
-%}As an administrator of "{{ organization }}",
-you are being notified than a new membership request from {{ user }}
-is pending for approval.
+En tant qu'administrateur de "{{ membership.organization.display_name }}",
+nous vous informons qu'une nouvelle demande d'adhésion de "{{ membership.user.fullname }}" est en attente de validation.
 
 
-You can go to the "{{ organization }}" page to accept or refuse the request:
-{{ organization_url}}
-{% endtrans %}
+Vous pouvez vous rendre sur la page de "{{ membership.organization.display_name }}" pour accepter ou refuser la demande:
+{{ org_url }}
+
+--
+L'équipe de "{{ site_title }}".

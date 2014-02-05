@@ -106,7 +106,7 @@ class MembershipRequest(Base):
         mail_user(user, subject, body)
 
     def notify_admins(self):
-        subject = toolkit._('New membership request for {0}').format(self.organization.display_name)
+        subject = "Nouvelle demande d'adhésion pour {0}".format(self.organization.display_name)
 
         admins = DB.query(model.User).join(model.GroupRole)
         admins = admins.filter(model.GroupRole.group_id == self.organization_id)
@@ -130,10 +130,10 @@ class MembershipRequest(Base):
             'username': self.user.name,
             'role': model.Role.EDITOR,
         })
-        self.send_mail(self.user, toolkit._('Membership accepted'), 'youckan/mail_membership_accepted.html')
+        self.send_mail(self.user, 'Adhésion acceptée', 'youckan/mail_membership_accepted.html')
         return membership
 
     def refuse(self, user, comment):
         self.refusal_comment = comment
         self.handle(user, Status.REFUSED)
-        self.send_mail(self.user, toolkit._('Membership refused'), 'youckan/mail_membership_refused.html')
+        self.send_mail(self.user, 'Adhésion refusée', 'youckan/mail_membership_refused.html')

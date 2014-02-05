@@ -1,8 +1,7 @@
-{% trans
-    organization=membership.organization.display_name,
-    organization_url=org_url
-%}You're membership request for {{ organization }} has been accepted.
+Votre demande d'adhésion à {{ membership.organization.display_name }} a été acceptée.
 
-You can go to the orgnization page to see your new status:
-{{ organization_url }}
-{% endtrans %}
+Vous pouvez vous rendre sur la page de l'organisation:
+{{ org_url }}
+
+--
+L'équipe de "{{ site_title }}".

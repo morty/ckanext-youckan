@@ -1,7 +1,6 @@
-{% trans
-    organization=membership.organization.display_name,
-    comment=membership.refusal_comment
-%}You're membership request for {{ organization }} has been refused with the following reason:
+Votre demande d'adhésion à {{ membership.organization.display_name }} a été refusée avec le motif suivant:
 
-{{ comment }}
-{% endtrans %}
+{{ membership.refusal_comment }}
+
+--
+L'équipe de "{{ site_title }}".

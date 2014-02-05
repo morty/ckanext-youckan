@@ -1,25 +1,21 @@
-{% if user.sysadmin %}
-    {% trans %}As a sysadmin of "{{ site_title }}",{% endtrans %}
-{% elif organization %}
-    {% trans %}As a member of "{{ organization }}",{% endtrans %}
-{% else %}
-    {% trans %}As dataset owner, {% endtrans %}
-{% endif %}
-{% trans
-    username=alert.user.fullname|safe,
-    dataset=alert.dataset.title|safe,
-    type=names[alert.type]|safe,
-    comment=alert.comment|safe,
-    dataset_url=dataset_url|safe
-%}you are being notified than {{ username }} emitted an alert on your dataset:
+{%- if user.sysadmin -%}
+En tant qu'administreur de "{{ site_title }}",
+{%- elif organization -%}
+En tant que membre de "{{ organization }}",
+{%- else -%}
+En tant que propriétaire,
+{%- endif -%}
+nous vous informons que {{ alert.user.fullname }} a émis une alerte sur jeu de données:
 
-Dataset: {{ dataset }}
-Type: {{ type }}
-Comment:
+Jeu de données: {{ alert.dataset.title }}
+Type: {{ names[alert.type] }}
+Commentaire:
 
-{{ comment }}
+{{ alert.comment }}
 
 
-You can go to the dataset page:
+Vous pouvez consulter cette alerte sur la page du jeu de données:
 {{ dataset_url }}
-{% endtrans %}
+
+--
+L'équipe de "{{ site_title }}".
