@@ -1,6 +1,6 @@
-En tant qu'administrateur de "{{ membership.organization.display_name }}",
-nous vous informons qu'une nouvelle demande d'adhésion de "{{ membership.user.fullname }}" est en attente de validation.
+En tant qu'administrateur de "{{ membership.organization.display_name|safe }}",
+nous vous informons qu'une nouvelle demande d'adhésion de "{{ membership.user.fullname|safe }}" est en attente de validation.
 
 
-Vous pouvez vous rendre sur la page de "{{ membership.organization.display_name }}" pour accepter ou refuser la demande:
+Vous pouvez vous rendre sur la page de "{{ membership.organization.display_name|safe }}" pour accepter ou refuser la demande:
 {{ org_url }}

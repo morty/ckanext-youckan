@@ -1,17 +1,17 @@
 {%- if user.sysadmin -%}
-En tant qu'administreur de "{{ site_title }}",
+En tant qu'administreur de "{{ site_title|safe }}",
 {%- elif organization -%}
-En tant que membre de "{{ organization }}",
+En tant que membre de "{{ organization.display_name|safe }}",
 {%- else -%}
 En tant que propriétaire,
 {%- endif -%}
-nous vous informons que {{ alert.user.fullname }} a émis une alerte sur jeu de données:
+nous vous informons que {{ alert.user.fullname|safe }} a émis une alerte sur jeu de données:
 
-Jeu de données: {{ alert.dataset.title }}
-Type: {{ names[alert.type] }}
+Jeu de données: {{ alert.dataset.title|safe }}
+Type: {{ names[alert.type]|safe }}
 Commentaire:
 
-{{ alert.comment }}
+{{ alert.comment|safe }}
 
 
 Vous pouvez consulter cette alerte sur la page du jeu de données:
