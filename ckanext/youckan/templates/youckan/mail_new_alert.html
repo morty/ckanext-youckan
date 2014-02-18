@@ -5,7 +5,7 @@ En tant que membre de "{{ organization.display_name|safe }}",
 {%- else -%}
 En tant que propriétaire,
 {%- endif -%}
-nous vous informons que {{ alert.user.fullname|safe }} a émis une alerte sur jeu de données:
+nous vous informons que {{ alert.user.fullname|safe }} ({{ alert.user.email|safe }}) a émis une alerte sur jeu de données:
 
 Jeu de données: {{ alert.dataset.title|safe }}
 Type: {{ names[alert.type]|safe }}
