@@ -157,4 +157,3 @@ class DatasetAlert(Base):
         self.send_mail(self.user, subject, 'youckan/mail_alert_reponse.html')
         for user in self.get_user_to_notify():
             self.send_mail(user, subject, 'youckan/mail_alert_reponse.html')
-
