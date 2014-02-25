@@ -121,9 +121,7 @@ class DatasetAlert(Base):
 
         mail_user(user, subject, body)
 
-    def notify_admins(self):
-        subject = 'Nouvelle alerte pour {0}'.format(self.dataset.title)
-
+    def get_user_to_notify(self):
         owners = DB.query(model.User).join(model.PackageRole)
         owners = owners.filter(model.PackageRole.package_id == self.dataset.id)
         owners = owners.filter(model.PackageRole.role == model.Role.ADMIN)
@@ -145,7 +143,18 @@ class DatasetAlert(Base):
             queries.append(org_members)
 
         queries = (q.subquery().select() for q in queries)
-        users = DB.query(model.User).select_from(sql.union(*queries))
+        return DB.query(model.User).select_from(sql.union(*queries))
 
-        for user in users:
+    def notify_admins(self):
+        subject = 'Nouvelle alerte pour {0}'.format(self.dataset.title)
+
+        for user in self.get_user_to_notify():
             self.send_mail(user, subject, 'youckan/mail_new_alert.html')
+
+    def notify_response(self):
+        subject = 'Réponse à l\'alerte concernant {0}'.format(self.dataset.title)
+
+        self.send_mail(self.user, subject, 'youckan/mail_alert_reponse.html')
+        for user in self.get_user_to_notify():
+            self.send_mail(user, subject, 'youckan/mail_alert_reponse.html')
+

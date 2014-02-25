@@ -1,0 +1,24 @@
+{%- if user.sysadmin -%}
+En tant qu'administreur de "{{ site_title|safe }}",
+{%- elif organization -%}
+En tant que membre de "{{ organization.display_name|safe }}",
+{%- elif user.id == alert.user_id -%}
+En tant qu'émetteur de l'alerte,
+{%- else -%}
+En tant que propriétaire,
+{%- endif -%}
+
+nous vous informons que {{ alert.closed_by.fullname|safe }} a fermé l'alerte suivante:
+
+Jeu de données: {{ alert.dataset.title|safe }}
+Type: {{ names[alert.type]|safe }}
+Commentaire:
+
+{{ alert.comment|safe }}
+
+Le motif de fermeture étant:
+
+{{ alert.close_comment|safe }}
+
+Vous pouvez consulter la page du jeu de données pour plus de détails:
+{{ dataset_url }}

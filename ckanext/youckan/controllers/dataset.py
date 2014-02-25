@@ -135,6 +135,8 @@ class YouckanDatasetController(YouckanBaseController):
         DB.add(alert)
         DB.commit()
 
+        alert.notify_response()
+
         return self.json_response({
             'id': alert.id,
             'user_id': alert.user_id,
@@ -146,4 +148,3 @@ class YouckanDatasetController(YouckanBaseController):
             'closed_by_id': alert.closed_by_id,
             'close_comment': alert.close_comment,
         })
-
