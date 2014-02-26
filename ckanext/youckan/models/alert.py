@@ -121,7 +121,7 @@ class DatasetAlert(Base):
 
         mail_user(user, subject, body)
 
-    def get_user_to_notify(self):
+    def get_concerned_users(self, all_members=True):
         owners = DB.query(model.User).join(model.PackageRole)
         owners = owners.filter(model.PackageRole.package_id == self.dataset.id)
         owners = owners.filter(model.PackageRole.role == model.Role.ADMIN)
@@ -139,6 +139,11 @@ class DatasetAlert(Base):
                 model.Member.state == 'active',
                 model.Member.table_name == 'user',
             )
+            if not all_members:
+                org_members = org_members.filter(sql.or_(
+                    model.Member.capacity == model.Role.ADMIN,
+                    model.Member.capacity == model.Role.EDITOR,
+                ))
 
             queries.append(org_members)
 
@@ -148,12 +153,15 @@ class DatasetAlert(Base):
     def notify_admins(self):
         subject = 'Nouvelle alerte pour {0}'.format(self.dataset.title)
 
-        for user in self.get_user_to_notify():
+        for user in self.get_concerned_users():
             self.send_mail(user, subject, 'youckan/mail_new_alert.html')
 
     def notify_response(self):
         subject = 'Réponse à l\'alerte concernant {0}'.format(self.dataset.title)
 
         self.send_mail(self.user, subject, 'youckan/mail_alert_reponse.html')
-        for user in self.get_user_to_notify():
+        for user in self.get_concerned_users():
             self.send_mail(user, subject, 'youckan/mail_alert_reponse.html')
+
+    def can_close(self, user):
+        return user.sysadmin or user.id == self.user_id or user in self.get_concerned_users(False)

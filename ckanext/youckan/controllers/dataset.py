@@ -127,10 +127,11 @@ class YouckanDatasetController(YouckanBaseController):
         user = toolkit.c.userobj
         if not user:
             raise toolkit.NotAuthorized('You need to be authenticated to delete an alert')
-        elif not user.sysadmin:
-            raise toolkit.NotAuthorized('Only sysadmins can delete alert')
 
         alert = DatasetAlert.get(alert_id)
+        if not alert.can_close(user):
+            raise toolkit.NotAuthorized('You are not allowed to close this alert')
+
         alert.close(user, toolkit.request.POST.get('comment'))
         DB.add(alert)
         DB.commit()
